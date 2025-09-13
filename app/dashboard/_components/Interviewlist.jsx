@@ -13,18 +13,30 @@ function Interviewlist() {
          user&& GetInterviewList()
     },[user])
     const GetInterviewList=async()=>{
-        const result=await db.select().from(MockInterview).where(eq(MockInterview.createdBy,user?.primaryEmailAddress?.emailAddress)).orderBy(desc(MockInterview.id))
-        setInterviewList(result)
+        try {
+            console.log("Fetching interviews for user:", user?.primaryEmailAddress?.emailAddress);
+            const result=await db.select().from(MockInterview).where(eq(MockInterview.createdBy,user?.primaryEmailAddress?.emailAddress)).orderBy(desc(MockInterview.id))
+            console.log("Interview list from database:", result);
+            setInterviewList(result)
+        } catch (error) {
+            console.error("Error fetching interviews:", error);
+        }
     }
   return (
     <div>
         <h2 className='font-medium text-xl'>Previous Mock Interview</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 my-3'>
-            {
-                interviewList&&interviewList.map((interview,index)=>(
-                    <InterviewItemCard key={index} interviewInfo={interview} />                ))
-            }
+            {interviewList && interviewList.length > 0 ? (
+                interviewList.map((interview,index)=>(
+                    <InterviewItemCard key={index} interviewInfo={interview} />
+                ))
+            ) : (
+                <div className="col-span-full text-center py-10">
+                    <p className="text-gray-500">No previous interviews found. Create your first interview!</p>
+                </div>
+            )}
         </div>
+        
     </div>
   )
 }

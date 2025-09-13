@@ -6,13 +6,19 @@ import { eq } from "drizzle-orm";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import Webcam from "react-webcam";
+import dynamic from "next/dynamic";
+
+// Dynamically import Webcam to avoid SSR issues
+const Webcam = dynamic(() => import("react-webcam"), { ssr: false });
 
 function Interview({ params }) {
   const [interviewData, setInterviewData] = useState();
   const [webCamEnabled, setWebCamEnabled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  
   useEffect(() => {
     GetInterviewDetail();
+    setIsMounted(true);
   }, []);
 
   /**
@@ -50,7 +56,7 @@ function Interview({ params }) {
         </div>
       </div>
       <div>
-        {webCamEnabled ? (
+        {isMounted && webCamEnabled ? (
           <Webcam
             mirrored={true}
             style={{ height: 300, width: 300 }}

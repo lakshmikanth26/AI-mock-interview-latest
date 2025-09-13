@@ -1,14 +1,15 @@
+"use client";
 import { Lightbulb, Volume2 } from 'lucide-react'
 import React from 'react'
 
 function QuestionsSections({activeQuestionIndex,mockInterViewQuestion}) {
     
    const textToSpeach=(text)=>{
-    if('speechSynthesis' in window){
+    if(typeof window !== 'undefined' && 'speechSynthesis' in window){
       const speech= new SpeechSynthesisUtterance(text);
       window.speechSynthesis.speak(speech)
     }else{
-      alert('Sorry, Your browser does not sport text to speech (recommended browser Chrome)')
+      alert('Sorry, Your browser does not support text to speech (recommended browser Chrome)')
     }
 
    }
